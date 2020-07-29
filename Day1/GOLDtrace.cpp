@@ -7,7 +7,7 @@ using namespace std;
 const int N = 1e5 + 1;
 
 int n, l1, l2;
-int a[N], dp[N];
+int a[N], dp[N], trace[N];
 bool vis[N];
 
 int32_t main() {
@@ -25,19 +25,38 @@ int32_t main() {
 
     for (int i = l1 + 1; i <= n; i++) {
         int mx = 0;
+        int p = 0;
         for (int j = l1; j <= l2; j++) {
             if (i - j < 0) break;
-            mx = max(mx, dp[i - j]);
+            if (mx < dp[i - j]) {
+                mx = dp[i - j];
+                p = i - j;
+            }
         }
         dp[i] = a[i] + mx;
+        trace[i] = p;
     }
 
     int ans = 0;
+    int p = 0;
+
     for (int i = 1; i <= n; i++) {
-        ans = max(ans, dp[i]);
+        if (ans < dp[i]) {
+            ans = dp[i];
+            p = i;
+        }
     }
 
-    cout << ans;
+    stack<int> st;
+    for (int i = p; i != 0; i = trace[i]) {
+        st.push(i);
+    }
+    
+    cout << ans << ' ' << st.size() << '\n';
+    while (!st.empty()) {
+        cout << st.top() << ' ';
+        st.pop();
+    }
 
     return 0;
 }
