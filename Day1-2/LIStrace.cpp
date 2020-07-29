@@ -1,30 +1,50 @@
 #include <bits/stdc++.h>
+
 using namespace std;
-long long n;
-vector <long long> a(100001, 0), l(100001, INT_MAX), pre(100001, 0), save;
-int main()
-{
-	cin >> n;
-	for (int i = 1; i <= n; i++) cin >> a[i];
-	a[0] = INT_MIN;
-	a[n + 1] = INT_MAX;
-	l[0] = 0;
-	long long ans = 0;
-	for (int i = 1; i <= n; i++)
-	{
-    	long long res = lower_bound(l.begin(), l.end(), a[i]) - l.begin();
-    	l[res] = a[i];
-    	pre[i] = res;
-    	ans = max(ans, res);
-	}
-	int i = n, exp = ans;
-	for (int i = n; i >= 0; i--)
-		if (pre[i] == exp)
-		{
-			save.push_back(i);
-			exp--;
-		}
-	cout << ans << endl;
-	for (int i = save.size() - 2; i >= 0; i--) cout << save[i] << " ";
-	return 0;
+
+const int N = 1e5;
+const int INF = 1e9;
+
+int a[N + 2], l[N + 2], pre[N + 2];
+
+int32_t main() {
+    cin.tie(NULL)->sync_with_stdio(false);
+    
+    int n;
+    cin >> n;
+
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+
+    fill(l, l + N + 2, INF);
+
+    a[0] = -INF;
+    a[n + 1] = INF;
+    l[0] = 0;
+
+    int ans = 0;
+
+    for (int i = 1; i <= n; i++) {
+        int pos = lower_bound(l, l + N + 2, a[i]) - l;
+        l[pos] = a[i];
+        pre[i] = pos;
+        ans = max(ans, pos);
+    }
+
+    vector<int> ord;
+    for (int i = n, exp = ans; i >= 0; i--) {
+        if (pre[i] == exp) {
+            ord.push_back(i);
+            --exp;
+        }
+    }
+
+    cout << ans << '\n';
+    for (int i = (int) ord.size() - 2; i >= 0; i--) {
+        cout << ord[i] << ' ';
+    }
+
+    return 0;
 }
+
