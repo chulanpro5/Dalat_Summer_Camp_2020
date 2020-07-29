@@ -17,23 +17,18 @@ vector<int> ans;
 
 int dp(int i, int j) {
     if (j == t[i]) {
-        if (res < memo[i][j]) {
-            res = memo[i][j];
-            pos = i;
-        }
+        res = max(res, memo[i][j]);
         return memo[i][j] = a[i];
     }
 
     if (j < t[i]) return 0;
     if (vis[i][j]) return memo[i][j];
-    for (int k = i - 1; k >= 0 && i - k <= D; k--) {
+    
+    for (int k = i - 1; 0 <= k && i - k <= D; k--) {
         memo[i][j] = max(memo[i][j], dp(k, j - t[i]) + a[i]);
     }
 
-    if (res < memo[i][j]) {
-        res = memo[i][j];
-        pos = i;
-    }
+    res = max(res, memo[i][j]);
 
     vis[i][j] = true;
     return memo[i][j];
@@ -52,7 +47,9 @@ int32_t main() {
     for (int i = 1; i <= n; i++) {
         dp(i, T);
     }
+
     cout << res;
+    
     return 0;
 }
 
