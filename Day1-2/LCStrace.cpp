@@ -1,70 +1,39 @@
 #include <bits/stdc++.h>
-
 using namespace std;
-
-// ====================================================================
-string to_string(string s){return '"'+s+'"';}
-string to_string(const char* s){return to_string((string)s);}
-string to_string(bool b){return (b?"true":"false");}
-template<typename A,typename B>string to_string(pair<A,B> p){return '('+to_string(p.first)+", "+ to_string(p.second)+')';}
-template<typename A>string to_string(A v){bool first=1;string res="{";for(const auto &x:v){if(!first){res += ", ";}first=0;res+=to_string(x);}res += '}';return res;}
-void dbo(){cerr<<endl;} template<typename _H,typename... _T>void dbo(_H H,_T... T){cerr<<' '<<to_string(H);dbo(T...);}
-#ifdef LOCAL
-#define debug(...) cerr<<'['<<#__VA_ARGS__<<"]:",dbo(__VA_ARGS__)
-#else
-#define debug(...) "Hikarii"
-#endif
-// ====================================================================
-
-const int N = 1e3 + 1;
-int a[N], b[N];
-int dp[N][N], trace[N];
-int n, m;
-
-int32_t main() {
-    cin.tie(NULL)->sync_with_stdio(false);
-    
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-    }
-
-    cin >> m;
-    for (int i = 1; i <= m; i++) {
-        cin >> b[i];
-    }
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (a[i] == b[j]) {
-                dp[i][j] = 1 + dp[i - 1][j - 1];
-            }
-            else {
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    } 
-
-    cout << dp[n][m] << '\n';
-    
-    stack<int> st;
-    while (dp[n][m]) {
-        while (dp[n][m] == dp[n][m - 1]) --m;
-        while (dp[n][m] == dp[n - 1][m]) --n;
-        st.push(a[n]);
-        n--; m--;
-    }
-
-    while (!st.empty()) {
-        cout << st.top() << ' ';
-        st.pop();
-    }
-
-    return 0;
+int n, a[1001], m, b[1001], mem[1001][1001];
+bool mark[1001][1001] = {0};
+int LCS(int i, int j)
+{
+	if (i == 0 || j == 0) return mark[i][j] = 0;
+	if (mark[i][j]) return mem[i][j];
+	if (a[i] == b[j]) mem[i][j] = max(max(LCS(i - 1, j), LCS(i, j - 1)), LCS(i - 1, j - 1) + 1);  
+	else mem[i][j] = max(LCS(i - 1, j), LCS(i, j - 1));
+	mark[i][j] = 1;
+	return mem[i][j];
 }
-/*
-7
-3 7 2 5 1 4 9
-10
-4 3 2 3 6 1 5 4 9 7
-*/
+void trace(int i, int j)
+{
+	if (i == 0 || j == 0) return;
+	if (a[i] == b[j])
+	{
+		trace(i - 1, j - 1);
+		cout << a[i] << " ";
+		return;
+	}
+	if (mem[i][j] == mem[i][j - 1]) trace(i, j - 1);
+	else trace(i - 1, j);
+}
+int main()
+{
+	cin >> n;
+	for (int i = 1; i <= n; i++) cin >> a[i];
+	cin >> m;
+	for (int i = 1; i <= m; i++) cin >> b[i];
+	int maxlcs = 0;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			maxlcs = max(maxlcs, LCS(i, j));
+	cout << maxlcs << endl;
+	trace(n, m);
+	return 0;
+}
