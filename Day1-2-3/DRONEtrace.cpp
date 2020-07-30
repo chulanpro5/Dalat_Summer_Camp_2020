@@ -28,6 +28,12 @@ int main(){
                 if(mem[i][j] + a[i + l] > mem[i + l][j + 1])
                     mem[i + l][j + 1] = mem[i][j] + a[i + l],
                     trace[i + l][j + 1] = {i, j};
+    
+    if (mem[n][k + 1] == 0) {
+        cout << -1;
+        return 0;
+    }
+
     cout << mem[n][k + 1] << ' ';
     stack<int> s;
     for(int i = trace[n][k + 1].first, j = trace[n][k + 1].second, t; i != 1; t = i, i = trace[i][j].first, j = trace[t][j].second)

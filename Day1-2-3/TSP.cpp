@@ -3,6 +3,20 @@
 using namespace std;
 
 // ====================================================================
+string to_string(string s){return '"'+s+'"';}
+string to_string(const char* s){return to_string((string)s);}
+string to_string(bool b){return (b?"true":"false");}
+template<typename A,typename B>string to_string(pair<A,B> p){return '('+to_string(p.first)+", "+ to_string(p.second)+')';}
+template<typename A>string to_string(A v){bool first=1;string res="{";for(const auto &x:v){if(!first){res += ", ";}first=0;res+=to_string(x);}res += '}';return res;}
+void dbo(){cerr<<endl;} template<typename _H,typename... _T>void dbo(_H H,_T... T){cerr<<' '<<to_string(H);dbo(T...);}
+#ifdef LOCAL
+#define debug(...) cerr<<'['<<#__VA_ARGS__<<"]:",dbo(__VA_ARGS__)
+#else
+#define debug(...) "Hikarii"
+#endif
+// ====================================================================
+
+// ====================================================================
 void read(){return;} void writesp(){return;} void writeln(){return;}
 template<typename T>void write(T x){if(x<0){putchar('-');x=-x;}char buf[20],*p=buf;do{*p++='0'+x%10;x/=10;}while(x);do{putchar(*--p);}while(p>buf);}
 template<typename T>void _wiln_(T x){write(x);putchar('\n');}
@@ -65,20 +79,6 @@ int32_t main() {
 
     writeln(f(1, 1 << 1));
 
-    vector<int> ans = {1};
-
-    for (int i = 1, mask = 1 << 1, k = 0; k < n - 1; k++) {
-        for (int j = 1; j <= n; j++) {
-            if ((mask >> j & 1) == 0 && memo[i][mask] == cost[i][j] + memo[j][mask | (1 << j)]) {
-                ans.push_back(j);
-                i = j;
-                mask |= (1 << j);
-            }
-        }
-    }
-
-    for (int i : ans) writesp(i);
-
     return 0;
 }
 /*
@@ -88,4 +88,3 @@ int32_t main() {
 3 2 1
 2 1 2
 */
-
